@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generador Profesional de Hallazgos</title>
+</head>
+<body>
+    <h2>Generador Profesional de Hallazgos y Anexos</h2>
+
+    <form method="post">
+        <input name="control" placeholder="Control evaluado" required><br><br>
+        <input name="objetivo" placeholder="Objetivo del control" required><br><br>
+        <input name="alcance" placeholder="Alcance de la revisión" required><br><br>
+
+        <textarea name="identificado" placeholder="Qué se identificó" required></textarea><br><br>
+        <textarea name="correcto" placeholder="Qué sí se realiza correctamente" required></textarea><br><br>
+        <textarea name="causa" placeholder="Causa raíz" required></textarea><br><br>
+        <textarea name="consecuencia" placeholder="Consecuencia" required></textarea><br><br>
+
+        <button type="submit">Generar redacción</button>
+    </form>
+
+    {% if resultado %}
+        <hr>
+        <h3>Resultado:</h3>
+        <pre style="white-space: pre-wrap;">{{ resultado }}</pre>
+    {% endif %}
+</body>
+</html>
