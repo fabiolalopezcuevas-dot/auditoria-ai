@@ -1,28 +1,138 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="es">
 <head>
-    <title>Generador Profesional de Hallazgos</title>
+  <meta charset="utf-8" />
+  <title>Generador de Redacción - Auditoría y Ciberseguridad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 2rem; }
+    .error { color: #b20000; }
+    .card { border: 1px solid #ddd; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+    h2 { margin-top: 2rem; }
+    label { display:block; margin-top: .7rem; }
+    textarea, input[type="text"] { width: 100%; min-height: 60px; font-family: inherit; }
+    button { margin-top: 1rem; padding: .6rem 1rem; }
+    ul { padding-left: 1.2rem; }
+    .section-title { margin-top: 1rem; font-weight: 600; }
+  </style>
 </head>
 <body>
-    <h2>Generador Profesional de Hallazgos y Anexos</h2>
+  <h1>Generador de Hallazgos y Anexos</h1>
 
-    <form method="post">
-        <input name="control" placeholder="Control evaluado" required><br><br>
-        <input name="objetivo" placeholder="Objetivo del control" required><br><br>
-        <input name="alcance" placeholder="Alcance de la revisión" required><br><br>
+  {% if errores and errores|length > 0 %}
+    <div class="error">
+      <ul>
+        {% for e in errores %}
+          <li>{{ e }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
 
-        <textarea name="identificado" placeholder="Qué se identificó" required></textarea><br><br>
-        <textarea name="correcto" placeholder="Qué sí se realiza correctamente" required></textarea><br><br>
-        <textarea name="causa" placeholder="Causa raíz" required></textarea><br><br>
-        <textarea name="consecuencia" placeholder="Consecuencia" required></textarea><br><br>
+  <form method="post" class="card">
+    <label>Control
+      <input type="text" name="control" value="{{ (data.control or '') if data else '' }}" required />
+    </label>
 
-        <button type="submit">Generar redacción</button>
-    </form>
+    <label>Objetivo
+      <textarea name="objetivo" required>{{ (data.objetivo or '') if data else '' }}</textarea>
+    </label>
 
-    {% if resultado %}
-        <hr>
-        <h3>Resultado:</h3>
-        <pre style="white-space: pre-wrap;">{{ resultado }}</pre>
-    {% endif %}
+    <label>Alcance
+      <textarea name="alcance" required>{{ (data.alcance or '') if data else '' }}</textarea>
+    </label>
+
+    <label>Qué se identificó
+      <textarea name="identificado" required>{{ (data.identificado or '') if data else '' }}</textarea>
+    </label>
+
+    <label>Qué sí se hace correctamente
+      <textarea name="correcto" required>{{ (data.correcto or '') if data else '' }}</textarea>
+    </label>
+
+    <label>Causa raíz
+      <textarea name="causa" required>{{ (data.causa or '') if data else '' }}</textarea>
+    </label>
+
+    <label>Consecuencia
+      <textarea name="consecuencia" required>{{ (data.consecuencia or '') if data else '' }}</textarea>
+    </label>
+
+    <button type="submit">Generar</button>
+  </form>
+
+  {% if resultado %}
+    <div class="card">
+      <h2>Hallazgo</h2>
+      <p>{{ resultado.hallazgo }}</p>
+
+      <h2>Anexo</h2>
+
+      {% if resultado.anexo["Antecedente"] %}
+        <div>
+          <div class="section-title">Antecedente:</div>
+          <p>{{ resultado.anexo["Antecedente"] }}</p>
+        </div>
+      {% endif %}
+
+      {% if resultado.anexo["Qué se identificó"] %}
+        <div>
+          <div class="section-title">Qué se identificó:</div>
+          <p>{{ resultado.anexo["Qué se identificó"] }}</p>
+        </div>
+      {% endif %}
+
+      {% if resultado.anexo["Qué se realiza correctamente"] %}
+        <div>
+          <div class="section-title">Qué se realiza correctamente:</div>
+          <p>{{ resultado.anexo["Qué se realiza correctamente"] }}</p>
+        </div>
+      {% endif %}
+
+      {% if resultado.anexo["Riesgos asociados"] %}
+        <div>
+          <div class="section-title">Riesgos asociados:</div>
+          <p>{{ resultado.anexo["Riesgos asociados"] }}</p>
+        </div>
+      {% endif %}
+
+      {% if resultado.anexo["Recomendaciones"] %}
+        <div>
+          <div class="section-title">Recomendaciones:</div>
+          <ul>
+            {% for rec in resultado.anexo["Recomendaciones"] %}
+              <li>{{ rec }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {% if resultado.anexo["Referencias"] %}
+        <div>
+          <div class="section-title">Referencias:</div>
+          <ul>
+            {% for ref in resultado.anexo["Referencias"] %}
+              <li>{{ ref }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {% if resultado.anexo["Plan de remediación propuesto"] %}
+        <div>
+          <div class="section-title">Plan de remediación propuesto:</div>
+          <ol>
+            {% for paso in resultado.anexo["Plan de remediación propuesto"] %}
+              <li>
+                <strong>Acción:</strong> {{ paso.accion if paso.accion else '' }}<br/>
+                <strong>Evidencia esperada:</strong> {{ paso.evidencia if paso.evidencia else '' }}
+              </li>
+            {% endfor %}
+          </ol>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
 </body>
 </html>
+``<
